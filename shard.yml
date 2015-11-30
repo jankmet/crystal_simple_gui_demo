@@ -1,0 +1,6 @@
+name: awesome-game
+version: 0.0.1
+
+dependencies:
+  crsfml:
+    github: BlaXpirit/crsfml
