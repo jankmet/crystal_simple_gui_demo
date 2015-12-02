@@ -2,6 +2,10 @@
 
 require "crsfml"
 
+WINDOW_WIDTH  = 960
+WINDOW_HEIGHT = 640
+WALL_SIZE     =  32
+
 class Ball
   LIMIT_TOP   =  55
   LIMIT_BOTOM = 585
@@ -46,32 +50,38 @@ class Ball
   end
 end
 
-window = SF::RenderWindow.new(SF.video_mode(960, 640), "Simple GUI Dmeo")
+class Wall
+  def initialize
+    wall_texture = SF::Texture.from_file("Brick.png")
+    wall_texture.repeated = true
+
+    @wall_sprite = SF::Sprite.new(wall_texture)
+  end
+
+  def draw(target, states)
+    # top
+    @wall_sprite.position = SF.vector2(0, 0)
+    @wall_sprite.texture_rect = SF.int_rect(0, 0, WINDOW_WIDTH, WALL_SIZE)
+    target.draw @wall_sprite
+    # bottom
+    @wall_sprite.position = SF.vector2(0, WINDOW_HEIGHT - WALL_SIZE + 1)
+    target.draw @wall_sprite
+    # left
+    @wall_sprite.texture_rect = SF.int_rect(0, 0, WINDOW_HEIGHT - WALL_SIZE * 2, WALL_SIZE)
+    @wall_sprite.rotation = 90
+    @wall_sprite.position = SF.vector2(WALL_SIZE - 1, WALL_SIZE)
+    target.draw @wall_sprite
+    # right
+    @wall_sprite.position = SF.vector2(WINDOW_WIDTH, WALL_SIZE)
+    target.draw @wall_sprite
+  end
+end
+
+window = SF::RenderWindow.new(SF.video_mode(WINDOW_WIDTH, WINDOW_HEIGHT), "Simple GUI Dmeo")
 window.clear SF::Color::Blue
 
-wall_texture = SF::Texture.from_file("Brick.png")
-
-(0..29).each do |coll|
-  wall = SF::Sprite.new(wall_texture)
-  wall.position = SF.vector2(coll * 32, 0)
-  window.draw wall
-
-  wall2 = wall.dup
-  wall2.position = SF.vector2(coll * 32, 19 * 32 + 1)
-  window.draw wall2
-end
-
-(2..19).each do |row|
-  wall = SF::Sprite.new(wall_texture)
-  wall.rotation = -90
-  wall.position = SF.vector2(0, row * 32)
-  window.draw wall
-
-  wall2 = wall.dup
-  wall2.position = SF.vector2(29 * 32, row * 32)
-  wall2.rotation = -90
-  window.draw wall2
-end
+wall = Wall.new
+window.draw wall
 
 balls = [] of Ball
 balls << Ball.new(3 * 32, 4 * 32, 1)
