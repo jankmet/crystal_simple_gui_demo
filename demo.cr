@@ -12,14 +12,14 @@ class Ball
   LIMIT_LEFT  =  55
   LIMIT_RIGHT = 900
 
-  def initialize(pos_x : Number, pos_y : Number, step, scale = 0.3)
+  def initialize(pos_x : Number, pos_y : Number, @step, scale = 0.3)
     box_texture = SF::Texture.from_file("crystal.png")
     @box = SF::Sprite.new(box_texture)
     @box.position = SF.vector2(pos_x, pos_y)
 
     @box.scale = SF.vector2(scale, scale)
 
-    @dir = SF.vector2(step, step)
+    @dir = SF.vector2(@step, @step)
 
     @box.origin = SF.vector2(@box.local_bounds.width / 2, @box.local_bounds.height / 2)
   end
@@ -30,18 +30,18 @@ class Ball
 
     if (@box.position.y > LIMIT_BOTOM)
       @box.position.y = LIMIT_BOTOM
-      @dir.y = -1
+      @dir.y = -@step
     elsif (@box.position.y < LIMIT_TOP)
       @box.position.y = LIMIT_TOP
-      @dir.y = 1
+      @dir.y = @step
     end
 
     if (@box.position.x > LIMIT_RIGHT)
       @box.position.x = LIMIT_RIGHT
-      @dir.x = -1
+      @dir.x = -@step
     elsif (@box.position.x < LIMIT_LEFT)
       @box.position.x = LIMIT_LEFT
-      @dir.x = 1
+      @dir.x = @step
     end
   end
 
